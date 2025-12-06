@@ -1,12 +1,22 @@
 import { withSachetTables, dryOnlyTables } from "./data";
+import {
+  FOOD_TYPE,
+  SPECIAL_DIET,
+  WEIGHT_GOAL,
+  AGE_CATEGORY,
+  NULL_VALUE,
+} from "./constants";
 
 export interface CalculationParams {
   ageMonths: number;
   weightKg: number;
   isSpayedNeutered: boolean;
-  foodType: "dry-only" | "with-sachet";
-  specialDiet?: "standard" | "weight-management" | "kidney-heart";
-  weightGoal?: "maintain" | "reduce";
+  foodType: typeof FOOD_TYPE.DRY_ONLY | typeof FOOD_TYPE.WITH_SACHET;
+  specialDiet?:
+    | typeof SPECIAL_DIET.STANDARD
+    | typeof SPECIAL_DIET.WEIGHT_MANAGEMENT
+    | typeof SPECIAL_DIET.KIDNEY_HEART;
+  weightGoal?: typeof WEIGHT_GOAL.MAINTAIN | typeof WEIGHT_GOAL.REDUCE;
 }
 
 function findClosestWeight(weight: number, availableWeights: number[]): number {
@@ -15,10 +25,15 @@ function findClosestWeight(weight: number, availableWeights: number[]): number {
   );
 }
 
-function getAgeCategory(ageMonths: number): "puppy" | "adult" | "senior" {
-  if (ageMonths < 12) return "puppy";
-  if (ageMonths < 84) return "adult"; // 7 years = 84 months
-  return "senior";
+function getAgeCategory(
+  ageMonths: number
+):
+  | typeof AGE_CATEGORY.PUPPY
+  | typeof AGE_CATEGORY.ADULT
+  | typeof AGE_CATEGORY.SENIOR {
+  if (ageMonths < 12) return AGE_CATEGORY.PUPPY;
+  if (ageMonths < 84) return AGE_CATEGORY.ADULT; // 7 years = 84 months
+  return AGE_CATEGORY.SENIOR;
 }
 
 function getPuppyAgeRange(
@@ -57,7 +72,7 @@ function getSeniorAgeRange(
 function getWeightManagementColumn(
   ageMonths: number,
   isSpayedNeutered: boolean,
-  weightGoal: "maintain" | "reduce"
+  weightGoal: typeof WEIGHT_GOAL.MAINTAIN | typeof WEIGHT_GOAL.REDUCE
 ): string {
   const ageYears = Math.floor(ageMonths / 12);
 
@@ -69,7 +84,7 @@ function getWeightManagementColumn(
     }
     return `避妊・去勢後 1〜3歳`;
   } else {
-    const goal = weightGoal === "maintain" ? "体重維持" : "減量";
+    const goal = weightGoal === WEIGHT_GOAL.MAINTAIN ? "体重維持" : "減量";
     if (ageYears >= 1 && ageYears <= 3) {
       return `${goal} 1〜3歳`;
     } else if (ageYears >= 4 && ageYears <= 6) {
@@ -110,32 +125,44 @@ export function calculateFoodAmount(params: CalculationParams): {
     weightGoal,
   } = params;
 
-  const tables = foodType === "with-sachet" ? withSachetTables : dryOnlyTables;
   const ageCategory = getAgeCategory(ageMonths);
 
   let table;
   let column: string;
 
   // Determine which table and column to use
-  if (specialDiet === "weight-management" && ageCategory !== "puppy") {
-    table = tables.weightManagement;
-    column = getWeightManagementColumn(
-      ageMonths,
-      isSpayedNeutered,
-      weightGoal || "maintain"
-    );
-  } else if (specialDiet === "kidney-heart" && foodType === "dry-only") {
-    table = tables.kidneyHeart;
+  if (
+    specialDiet === SPECIAL_DIET.KIDNEY_HEART &&
+    foodType === FOOD_TYPE.DRY_ONLY
+  ) {
+    // kidneyHeart only exists in dryOnlyTables
+    table = dryOnlyTables.kidneyHeart;
     column = getKidneyHeartColumn(ageMonths, isSpayedNeutered);
-  } else if (ageCategory === "puppy") {
-    table = tables.puppy;
-    column = getPuppyAgeRange(ageMonths);
-  } else if (ageCategory === "senior") {
-    table = tables.senior;
-    column = getSeniorAgeRange(ageMonths, isSpayedNeutered);
   } else {
-    table = tables.adult;
-    column = getAdultAgeRange(ageMonths, isSpayedNeutered);
+    // For all other cases, use the appropriate table set
+    const tables =
+      foodType === FOOD_TYPE.WITH_SACHET ? withSachetTables : dryOnlyTables;
+
+    if (
+      specialDiet === SPECIAL_DIET.WEIGHT_MANAGEMENT &&
+      ageCategory !== AGE_CATEGORY.PUPPY
+    ) {
+      table = tables.weightManagement;
+      column = getWeightManagementColumn(
+        ageMonths,
+        isSpayedNeutered,
+        weightGoal || WEIGHT_GOAL.MAINTAIN
+      );
+    } else if (ageCategory === AGE_CATEGORY.PUPPY) {
+      table = tables.puppy;
+      column = getPuppyAgeRange(ageMonths);
+    } else if (ageCategory === AGE_CATEGORY.SENIOR) {
+      table = tables.senior;
+      column = getSeniorAgeRange(ageMonths, isSpayedNeutered);
+    } else {
+      table = tables.adult;
+      column = getAdultAgeRange(ageMonths, isSpayedNeutered);
+    }
   }
 
   // Find the closest weight entry
@@ -149,13 +176,13 @@ export function calculateFoodAmount(params: CalculationParams): {
 
   const cups = (row as any)[column];
 
-  if (cups === null || cups === undefined || cups === "-") {
+  if (cups === null || cups === undefined || cups === NULL_VALUE) {
     return { cups: null, grams: null, tableName: table.name, column };
   }
 
   // Convert cups to grams
   // For puppies: 1 cup = 80g, for others: 1 cup = 75g
-  const gramsPerCup = ageCategory === "puppy" ? 80 : 75;
+  const gramsPerCup = ageCategory === AGE_CATEGORY.PUPPY ? 80 : 75;
   const grams = cups * gramsPerCup;
 
   return {

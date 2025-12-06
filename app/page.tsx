@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { calculateFoodAmount, CalculationParams } from "@/lib/calculator";
 import { withSachetTables, dryOnlyTables } from "@/lib/data";
+import { FOOD_TYPE, SPECIAL_DIET, WEIGHT_GOAL } from "@/lib/constants";
 import ExpandableTable from "@/components/ExpandableTable";
 
 export default function Home() {
@@ -11,23 +12,27 @@ export default function Home() {
   const [ageMonths, setAgeMonths] = useState<number>(12);
   const [weightKg, setWeightKg] = useState<number>(5);
   const [isSpayedNeutered, setIsSpayedNeutered] = useState<boolean>(false);
-  const [foodType, setFoodType] = useState<"dry-only" | "with-sachet">(
-    "dry-only"
-  );
+  const [foodType, setFoodType] = useState<
+    typeof FOOD_TYPE.DRY_ONLY | typeof FOOD_TYPE.WITH_SACHET
+  >(FOOD_TYPE.DRY_ONLY);
   const [specialDiet, setSpecialDiet] = useState<
-    "standard" | "weight-management" | "kidney-heart"
-  >("standard");
-  const [weightGoal, setWeightGoal] = useState<"maintain" | "reduce">(
-    "maintain"
-  );
+    | typeof SPECIAL_DIET.STANDARD
+    | typeof SPECIAL_DIET.WEIGHT_MANAGEMENT
+    | typeof SPECIAL_DIET.KIDNEY_HEART
+  >(SPECIAL_DIET.STANDARD);
+  const [weightGoal, setWeightGoal] = useState<
+    typeof WEIGHT_GOAL.MAINTAIN | typeof WEIGHT_GOAL.REDUCE
+  >(WEIGHT_GOAL.MAINTAIN);
 
   const params: CalculationParams = {
     ageMonths,
     weightKg,
     isSpayedNeutered,
     foodType,
-    specialDiet: specialDiet === "standard" ? undefined : specialDiet,
-    weightGoal: specialDiet === "weight-management" ? weightGoal : undefined,
+    specialDiet:
+      specialDiet === SPECIAL_DIET.STANDARD ? undefined : specialDiet,
+    weightGoal:
+      specialDiet === SPECIAL_DIET.WEIGHT_MANAGEMENT ? weightGoal : undefined,
   };
 
   const result = calculateFoodAmount(params);
@@ -83,15 +88,19 @@ export default function Home() {
             id="foodType"
             value={foodType}
             onChange={(e) =>
-              setFoodType(e.target.value as "dry-only" | "with-sachet")
+              setFoodType(
+                e.target.value as
+                  | typeof FOOD_TYPE.DRY_ONLY
+                  | typeof FOOD_TYPE.WITH_SACHET
+              )
             }
           >
-            <option value="dry-only">{t("dryOnly")}</option>
-            <option value="with-sachet">{t("dryWithSachet")}</option>
+            <option value={FOOD_TYPE.DRY_ONLY}>{t("dryOnly")}</option>
+            <option value={FOOD_TYPE.WITH_SACHET}>{t("dryWithSachet")}</option>
           </select>
         </div>
 
-        {foodType === "dry-only" && (
+        {foodType === FOOD_TYPE.DRY_ONLY && (
           <div className="form-group">
             <label htmlFor="specialDiet">{t("specialDiet")}</label>
             <select
@@ -101,25 +110,33 @@ export default function Home() {
                 setSpecialDiet(e.target.value as typeof specialDiet)
               }
             >
-              <option value="standard">{t("standard")}</option>
-              <option value="weight-management">{t("weightManagement")}</option>
-              <option value="kidney-heart">{t("kidneyHeart")}</option>
+              <option value={SPECIAL_DIET.STANDARD}>{t("standard")}</option>
+              <option value={SPECIAL_DIET.WEIGHT_MANAGEMENT}>
+                {t("weightManagement")}
+              </option>
+              <option value={SPECIAL_DIET.KIDNEY_HEART}>
+                {t("kidneyHeart")}
+              </option>
             </select>
           </div>
         )}
 
-        {specialDiet === "weight-management" && (
+        {specialDiet === SPECIAL_DIET.WEIGHT_MANAGEMENT && (
           <div className="form-group">
             <label htmlFor="weightGoal">{t("weightGoal")}</label>
             <select
               id="weightGoal"
               value={weightGoal}
               onChange={(e) =>
-                setWeightGoal(e.target.value as "maintain" | "reduce")
+                setWeightGoal(
+                  e.target.value as
+                    | typeof WEIGHT_GOAL.MAINTAIN
+                    | typeof WEIGHT_GOAL.REDUCE
+                )
               }
             >
-              <option value="maintain">{t("maintain")}</option>
-              <option value="reduce">{t("reduce")}</option>
+              <option value={WEIGHT_GOAL.MAINTAIN}>{t("maintain")}</option>
+              <option value={WEIGHT_GOAL.REDUCE}>{t("reduce")}</option>
             </select>
           </div>
         )}
