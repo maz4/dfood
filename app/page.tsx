@@ -6,6 +6,7 @@ import { calculateFoodAmount, CalculationParams } from "@/lib/calculator";
 import { withSachetTables, dryOnlyTables } from "@/lib/data";
 import { FOOD_TYPE, SPECIAL_DIET, WEIGHT_GOAL } from "@/lib/constants";
 import ExpandableTable from "@/components/ExpandableTable";
+import Footer from "@/components/Footer";
 
 export default function Home() {
   const { t } = useTranslation();
@@ -215,6 +216,8 @@ export default function Home() {
           </tbody>
         </table>
       </div>
+
+      <Footer />
     </div>
   );
 }

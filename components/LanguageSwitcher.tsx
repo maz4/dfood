@@ -23,10 +23,8 @@ export default function LanguageSwitcher() {
   };
 
   return (
-    <div className="language-switcher">
-      <button onClick={toggleLanguage}>
-        {currentLanguage === "ja" ? "English" : "日本語"}
-      </button>
-    </div>
+    <button className="language-switcher-button" onClick={toggleLanguage}>
+      {currentLanguage === "ja" ? "English" : "日本語"}
+    </button>
   );
 }

@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import "./globals.css";
 import PWARegister from "@/components/PWARegister";
 import I18nProvider from "@/components/I18nProvider";
-import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 export const metadata: Metadata = {
   title: "ドッグフード給与量計算機",
@@ -48,7 +47,6 @@ export default function RootLayout({
       <body>
         <I18nProvider>
           {children}
-          <LanguageSwitcher />
           <PWARegister />
         </I18nProvider>
       </body>

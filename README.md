@@ -1,4 +1,4 @@
-# Dog Food Calculator
+# 🐕 Dog Food Calculator
 
 [dfood live page](https://maz4.github.io/dfood/)
 
