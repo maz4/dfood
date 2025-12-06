@@ -1,5 +1,7 @@
 # Dog Food Calculator
 
+[dfood live page]()
+
 A Next.js Progressive Web App (PWA) to calculate the appropriate amount of dog food based on your dog's age, weight, and other factors.
 
 ## Features
@@ -77,5 +79,3 @@ This app is configured as a Progressive Web App. To complete the setup:
 - **Firefox**: Click the menu → Install
 
 The app will work offline after the first visit and can be installed on your device.
-# dfood
-# dfood
