@@ -1,6 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import {
+  translateColumnName,
+  translateTableName,
+} from "@/lib/tableTranslations";
 
 interface TableData {
   name: string;
@@ -12,6 +17,7 @@ interface ExpandableTableProps {
 }
 
 export default function ExpandableTable({ table }: ExpandableTableProps) {
+  const { t } = useTranslation();
   const [isExpanded, setIsExpanded] = useState(false);
 
   if (!table.data || table.data.length === 0) {
@@ -27,7 +33,7 @@ export default function ExpandableTable({ table }: ExpandableTableProps) {
         className="expandable-header"
         onClick={() => setIsExpanded(!isExpanded)}
       >
-        <h3 style={{ margin: 0 }}>{table.name}</h3>
+        <h3 style={{ margin: 0 }}>{translateTableName(table.name, t)}</h3>
         <span className={`arrow ${isExpanded ? "expanded" : ""}`}>▼</span>
       </div>
       {isExpanded && (
@@ -35,9 +41,9 @@ export default function ExpandableTable({ table }: ExpandableTableProps) {
           <table>
             <thead>
               <tr>
-                <th>現在の体重(kg)</th>
+                <th>{t("currentWeight")}</th>
                 {columns.map((col) => (
-                  <th key={col}>{col}</th>
+                  <th key={col}>{translateColumnName(col, t)}</th>
                 ))}
               </tr>
             </thead>
