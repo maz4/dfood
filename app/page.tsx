@@ -1,11 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { calculateFoodAmount, CalculationParams } from "@/lib/calculator";
 import { withSachetTables, dryOnlyTables } from "@/lib/data";
 import ExpandableTable from "@/components/ExpandableTable";
 
 export default function Home() {
+  const { t } = useTranslation();
   const [ageMonths, setAgeMonths] = useState<number>(12);
   const [weightKg, setWeightKg] = useState<number>(5);
   const [isSpayedNeutered, setIsSpayedNeutered] = useState<boolean>(false);
@@ -32,12 +34,12 @@ export default function Home() {
 
   return (
     <div className="container">
-      <h1>🐕 ドッグフード給与量計算機</h1>
+      <h1>{t("title")}</h1>
 
       <div className="section">
-        <h2>入力情報</h2>
+        <h2>{t("inputInfo")}</h2>
         <div className="form-group">
-          <label htmlFor="age">年齢（月）</label>
+          <label htmlFor="age">{t("age")}</label>
           <input
             id="age"
             type="number"
@@ -49,7 +51,7 @@ export default function Home() {
         </div>
 
         <div className="form-group">
-          <label htmlFor="weight">体重（kg）</label>
+          <label htmlFor="weight">{t("weight")}</label>
           <input
             id="weight"
             type="number"
@@ -70,13 +72,13 @@ export default function Home() {
               onChange={(e) => setIsSpayedNeutered(e.target.checked)}
             />
             <label htmlFor="spayed" style={{ margin: 0, cursor: "pointer" }}>
-              避妊・去勢済み
+              {t("spayedNeutered")}
             </label>
           </div>
         </div>
 
         <div className="form-group">
-          <label htmlFor="foodType">フードタイプ</label>
+          <label htmlFor="foodType">{t("foodType")}</label>
           <select
             id="foodType"
             value={foodType}
@@ -84,14 +86,14 @@ export default function Home() {
               setFoodType(e.target.value as "dry-only" | "with-sachet")
             }
           >
-            <option value="dry-only">ドライフードのみ</option>
-            <option value="with-sachet">ドライフード + パウチ</option>
+            <option value="dry-only">{t("dryOnly")}</option>
+            <option value="with-sachet">{t("dryWithSachet")}</option>
           </select>
         </div>
 
         {foodType === "dry-only" && (
           <div className="form-group">
-            <label htmlFor="specialDiet">特別な食事</label>
+            <label htmlFor="specialDiet">{t("specialDiet")}</label>
             <select
               id="specialDiet"
               value={specialDiet}
@@ -99,16 +101,16 @@ export default function Home() {
                 setSpecialDiet(e.target.value as typeof specialDiet)
               }
             >
-              <option value="standard">標準</option>
-              <option value="weight-management">体重管理用</option>
-              <option value="kidney-heart">腎臓・心臓の健康維持</option>
+              <option value="standard">{t("standard")}</option>
+              <option value="weight-management">{t("weightManagement")}</option>
+              <option value="kidney-heart">{t("kidneyHeart")}</option>
             </select>
           </div>
         )}
 
         {specialDiet === "weight-management" && (
           <div className="form-group">
-            <label htmlFor="weightGoal">体重目標</label>
+            <label htmlFor="weightGoal">{t("weightGoal")}</label>
             <select
               id="weightGoal"
               value={weightGoal}
@@ -116,37 +118,37 @@ export default function Home() {
                 setWeightGoal(e.target.value as "maintain" | "reduce")
               }
             >
-              <option value="maintain">体重維持</option>
-              <option value="reduce">減量</option>
+              <option value="maintain">{t("maintain")}</option>
+              <option value="reduce">{t("reduce")}</option>
             </select>
           </div>
         )}
 
         {result.cups !== null && (
           <div className="result">
-            <h3>推奨給与量</h3>
+            <h3>{t("recommendedAmount")}</h3>
             <div className="result-value">
-              {result.cups.toFixed(1)} カップ（1カップ = 200ml）
+              {result.cups.toFixed(1)} {t("cups")}
             </div>
-            <div className="result-value">{result.grams?.toFixed(0)} g</div>
+            <div className="result-value">
+              {result.grams?.toFixed(0)} {t("grams")}
+            </div>
             <div className="result-details">
-              使用テーブル: {result.tableName}
+              {t("tableUsed")}: {result.tableName}
               <br />
-              カテゴリー: {result.column}
+              {t("category")}: {result.column}
             </div>
           </div>
         )}
 
         {result.cups === null && ageMonths > 0 && weightKg > 0 && (
-          <div className="error">
-            この組み合わせではデータが見つかりませんでした。入力値を確認してください。
-          </div>
+          <div className="error">{t("noDataFound")}</div>
         )}
       </div>
 
       {/* Dry Food with Sachet Section */}
       <div className="section">
-        <h2>ドライフード + パウチ 給与目安表</h2>
+        <h2>{t("dryWithSachetTables")}</h2>
         <ExpandableTable table={withSachetTables.puppy} />
         <ExpandableTable table={withSachetTables.adult} />
         <ExpandableTable table={withSachetTables.senior} />
@@ -155,7 +157,7 @@ export default function Home() {
 
       {/* Dry Food Only Section */}
       <div className="section">
-        <h2>ドライフードのみ 給与目安表</h2>
+        <h2>{t("dryOnlyTables")}</h2>
         <ExpandableTable table={dryOnlyTables.puppy} />
         <ExpandableTable table={dryOnlyTables.adult} />
         <ExpandableTable table={dryOnlyTables.senior} />
@@ -165,25 +167,33 @@ export default function Home() {
 
       {/* Cup Information */}
       <div className="section">
-        <h2>計量カップ情報（重量の目安）</h2>
+        <h2>{t("cupInfo")}</h2>
         <table>
           <thead>
             <tr>
-              <th>種類</th>
-              <th>1 カップ</th>
-              <th>0.1 カップ</th>
+              <th>{t("type")}</th>
+              <th>{t("oneCup")}</th>
+              <th>{t("zeroOneCup")}</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td>子いぬ用</td>
-              <td>約 80g</td>
-              <td>約 8g</td>
+              <td>{t("puppyFood")}</td>
+              <td>
+                {t("approx")} 80{t("grams")}
+              </td>
+              <td>
+                {t("approx")} 8{t("grams")}
+              </td>
             </tr>
             <tr>
-              <td>子いぬ用以外</td>
-              <td>約 75g</td>
-              <td>約 7.5g</td>
+              <td>{t("nonPuppyFood")}</td>
+              <td>
+                {t("approx")} 75{t("grams")}
+              </td>
+              <td>
+                {t("approx")} 7.5{t("grams")}
+              </td>
             </tr>
           </tbody>
         </table>

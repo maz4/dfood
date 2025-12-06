@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import PWARegister from "@/components/PWARegister";
+import I18nProvider from "@/components/I18nProvider";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 export const metadata: Metadata = {
   title: "ドッグフード給与量計算機",
@@ -39,8 +41,11 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-title" content="Dog Food Calc" />
       </head>
       <body>
-        {children}
-        <PWARegister />
+        <I18nProvider>
+          {children}
+          <LanguageSwitcher />
+          <PWARegister />
+        </I18nProvider>
       </body>
     </html>
   );
