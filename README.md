@@ -1,6 +1,6 @@
 # Dog Food Calculator
 
-[dfood live page]()
+[dfood live page](https://maz4.github.io/dfood/)
 
 A Next.js Progressive Web App (PWA) to calculate the appropriate amount of dog food based on your dog's age, weight, and other factors.
 

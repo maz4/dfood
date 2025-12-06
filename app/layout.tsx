@@ -21,6 +21,10 @@ export const metadata: Metadata = {
     userScalable: false,
   },
   icons: {
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/icon-192x192.png", type: "image/png", sizes: "192x192" },
+    ],
     apple: "/icon-192x192.png",
   },
 };
@@ -33,6 +37,7 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <head>
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="manifest" href="/manifest.json" />
         <link rel="apple-touch-icon" href="/icon-192x192.png" />
         <meta name="theme-color" content="#3498db" />
