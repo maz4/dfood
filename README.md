@@ -78,3 +78,4 @@ This app is configured as a Progressive Web App. To complete the setup:
 
 The app will work offline after the first visit and can be installed on your device.
 # dfood
+# dfood
