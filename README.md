@@ -1,8 +1,10 @@
 # 🐕 Dog Food Calculator
 
+⚠️ This app is 100% vibe coded
+
 [dfood live page](https://maz4.github.io/dfood/)
 
-A Next.js Progressive Web App (PWA) to calculate the appropriate amount of dog food based on your dog's age, weight, and other factors.
+A Next.js Progressive Web App (PWA) to calculate the appropriate amount of dog food based on your dog's age, weight, and other factors. The tables used for calculation are from leaflet for Pet Line Pro Roses Professional Balance dry dog food for small dogs.
 
 ## Features
 
@@ -26,13 +28,13 @@ A Next.js Progressive Web App (PWA) to calculate the appropriate amount of dog f
 1. Install dependencies:
 
 ```bash
-npm install
+bun install
 ```
 
 2. Run the development server:
 
 ```bash
-npm run dev
+bun run dev
 ```
 
 3. Open [http://localhost:3000](http://localhost:3000) in your browser
@@ -40,8 +42,8 @@ npm run dev
 ### Build for Production
 
 ```bash
-npm run build
-npm start
+bun run build
+bun start
 ```
 
 ## Usage
